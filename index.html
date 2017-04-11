@@ -367,23 +367,89 @@
       
         
           
-            <h2 id="Location对象"><a href="#Location对象" class="headerlink" title="Location对象"></a>Location对象</h2><blockquote>
-<p>location用于获取或设置窗体的URL，并且可以用于解析URL。</p>
-<h4 id="location对象属性图示"><a href="#location对象属性图示" class="headerlink" title="location对象属性图示:"></a>location对象属性图示:</h4><p><img src="http://img.mukewang.com/53605c5a0001b26909900216.jpg" alt="image"></p>
-<h4 id="location对象属性"><a href="#location对象属性" class="headerlink" title="location对象属性:"></a>location对象属性:</h4><p><img src="http://img.mukewang.com/5354b1d00001c4ec06220271.jpg" alt="image"></p>
-<h4 id="location对象方法"><a href="#location对象方法" class="headerlink" title="location对象方法:"></a>location对象方法:</h4><p><img src="http://img.mukewang.com/5354b1eb00016a2405170126.jpg" alt="image"></p>
+            <h1 id="Tomcat服务器配置相关知识"><a href="#Tomcat服务器配置相关知识" class="headerlink" title="Tomcat服务器配置相关知识"></a>Tomcat服务器配置相关知识</h1><p>Tomcat服务器的启动配置:</p>
+<blockquote>
+<p>1.配置java_home环境变量 , 指向的是 jdk的安装的根目录<br>2.端口被占用的问题.</p>
 </blockquote>
-<hr>
-<h2 id="Navigator对象"><a href="#Navigator对象" class="headerlink" title="Navigator对象"></a>Navigator对象</h2><blockquote>
-<p>Navigator 对象包含有关浏览器的信息，通常用于检测浏览器与操作系统的版本。</p>
-<h4 id="对象属性"><a href="#对象属性" class="headerlink" title="对象属性:"></a>对象属性:</h4><p><img src="http://img.mukewang.com/5354cff70001428b06880190.jpg" alt="image"></p>
-<h4 id="userAgent"><a href="#userAgent" class="headerlink" title="userAgent"></a>userAgent</h4><p>返回用户代理头的字符串表示(就是包括浏览器版本信息等的字符串)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">navigator.userAgent</div></pre></td></tr></table></figure></p>
+<p>Web应用目录组织结构:</p>
+<blockquote>
+<p>Mail<br>Html+css+js 可以直接放在根目录下<br>–WEB-INF文件夹<br>–classes   .java类生成的字节码文件<br>– lib    存放 应用使用到的第三方的jar包<br>Web.xml  文件 , 最重要的配置文件 </p>
 </blockquote>
-<hr>
-<h2 id="screen对象"><a href="#screen对象" class="headerlink" title="screen对象"></a>screen对象</h2><blockquote>
-<p>screen对象用于获取用户的屏幕信息。</p>
-<h4 id="对象属性-1"><a href="#对象属性-1" class="headerlink" title="对象属性:"></a>对象属性:</h4><p><img src="http://img.mukewang.com/5354d2810001a47706210213.jpg" alt="image"></p>
+<h2 id="虚拟目录的映射方式"><a href="#虚拟目录的映射方式" class="headerlink" title="虚拟目录的映射方式"></a>虚拟目录的映射方式</h2><p>如何实现让服务器去管理你写好的web应用,让外界可以直接通过浏览器访问到 ?</p>
+<ul>
+<li>在<code>server.xml</code>文件中, host元素下 添加如下的内容</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">Context</span> <span class="attr">path</span>=<span class="string">"/news"</span> <span class="attr">docBase</span>=<span class="string">"E:\wenjian\news"</span>/&gt;</span></div></pre></td></tr></table></figure>
+<p>通过<a href="http://localhost:8080/news" target="_blank" rel="external">http://localhost:8080/news</a> 即可访问E:\wenjian\news文件夹<br>由于更改了<code>server.xml</code>,需要重新启动服务器</p>
+<ul>
+<li>进入到H:\Android-Develop-Tools\apache-tomcat-8.5.4-windows-x64\apache-tomcat-8.5.4\conf\Catalina\localhost目录下,新建<code>web.xml</code>文件进行配置,添加如下内容:</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&lt;?version="1.0"?&gt;</div><div class="line"><span class="tag">&lt;<span class="name">Context</span> <span class="attr">docBase</span>=<span class="string">"E:\Test"</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>即指定<a href="http://localhost:8080/Test为外部访问路径" target="_blank" rel="external">http://localhost:8080/Test为外部访问路径</a><br>不需要重启服务器,会自动完成加载</p>
+<ul>
+<li>傻瓜式的 , 直接将 web应用丢到webapps目录下就可以让服务器自动管理了,实际开发过程中,这种是用的最多的 .</li>
+</ul>
+<h2 id="更改服务器端口号为80"><a href="#更改服务器端口号为80" class="headerlink" title="更改服务器端口号为80"></a>更改服务器端口号为80</h2><p>访问百度时, 没有写端口,由于这里使用的是 <strong>http</strong> 协议, 所以 使用的是默认的端口 80 .咱们自己 在开发阶段就写8080, 一旦应用上线了, 那么就要写成 80.<br>一般开发过程中, 就是将服务器启动的端口改为80 .<br>在’server.xml’ 文件中,将8080改为80,然后重启服务器即可<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">Connector</span> <span class="attr">port</span>=<span class="string">"8080"</span> <span class="attr">protocol</span>=<span class="string">"HTTP/1.1"</span></span></div><div class="line">              <span class="attr">connectionTimeout</span>=<span class="string">"20000"</span></div><div class="line">              <span class="attr">redirectPort</span>=<span class="string">"8443"</span> /&gt;</div></pre></td></tr></table></figure></p>
+<blockquote>
+<p>如果启动失败,则可能是端口号被其他程序占用了,需要杀掉占用的程序    </p>
 </blockquote>
+<h2 id="War文件的制作以及tomcatmanager的使用"><a href="#War文件的制作以及tomcatmanager的使用" class="headerlink" title="War文件的制作以及tomcatmanager的使用"></a>War文件的制作以及tomcatmanager的使用</h2><p>War文件:是你可以远程的将已经开发好的web应用发布到tomcat服务器时的一种压缩格式 </p>
+<h3 id="war文件的制作"><a href="#war文件的制作" class="headerlink" title="war文件的制作"></a>war文件的制作</h3><ul>
+<li>第一种:傻瓜式的,通过压缩工具打包成zip格式的文件,然后将扩展名改为.war 文件 , 然后丢到 webapps目录下. Tomcat服务器会自动的解压缩 , 就可以访问了 </li>
+<li>第二种:通过命令压缩:<br>命令行输入jar cvf 要生产的文件 要压缩的资源文件,如下<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&gt; jar cvf news.war 1.html</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<blockquote>
+<p>Tip:按住shift,然后鼠标右击选择在此处打开命令行,可以快速定位命令行位置</p>
+</blockquote>
+<h3 id="TomcatManager的使用"><a href="#TomcatManager的使用" class="headerlink" title="TomcatManager的使用"></a>TomcatManager的使用</h3><p>提供一种 ui的界面, 让程序员 可以远程的去管理服务器 .<br>在conf目录下的 <code>tomcat-users.xml</code> 文件中,添加如下的内容 .  然后重启服务器.<br><figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">role</span> <span class="attr">rolename</span>=<span class="string">"admin-gui"</span>/&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">role</span> <span class="attr">rolename</span>=<span class="string">"manager-gui"</span>/&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">user</span> <span class="attr">username</span>=<span class="string">"tomcat"</span> <span class="attr">password</span>=<span class="string">"123"</span> <span class="attr">roles</span>=<span class="string">"admin-gui,manager-gui"</span>/&gt;</span></div></pre></td></tr></table></figure></p>
+<h2 id="使用web-xml-文件"><a href="#使用web-xml-文件" class="headerlink" title="使用web.xml 文件"></a>使用web.xml 文件</h2><blockquote>
+<p>Web.xml文件是整个web应用中最重要的配置文件，它必须放在<strong>WEB-INF</strong>目录中。在开发web应用时，但凡涉及到对web应用中的web资源进行配置，通通是在<code>web.xml</code>文件中进行设置。例如：<br>某个web资源配置为网站首页<br>将servlet程序映射到某个url地址上<br>为web应用配置监听器<br>为web应用配置过滤器<br>配置web应用的启动信息<br>……</p>
+</blockquote>
+<h3 id="将某个资源文件配置为web应用首页"><a href="#将某个资源文件配置为web应用首页" class="headerlink" title="将某个资源文件配置为web应用首页"></a>将某个资源文件配置为web应用首页</h3><p>在web.xml文件中添加以下内容，将mail.htm指定为mail应用的默认欢迎页，如果没有指定访问具体的页面，则显示默认欢迎页</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">welcome-file-list</span>&gt;</span></div><div class="line">   <span class="tag">&lt;<span class="name">welcome-file</span>&gt;</span>mail.html<span class="tag">&lt;<span class="name">welcome-file</span>/&gt;</span> </div><div class="line"><span class="tag">&lt;<span class="name">welcome-file-list</span>/&gt;</span></div></pre></td></tr></table></figure>
+<h2 id="设置虚拟主机"><a href="#设置虚拟主机" class="headerlink" title="设置虚拟主机"></a>设置虚拟主机</h2><p>Tomcat是一个服务器, 这个服务器中是可以配置很多个虚拟的主机的.<br>每个虚拟主机 实际上就是一个虚拟的名字</p>
+<p><a href="http://www.baidu.com" target="_blank" rel="external">http://www.baidu.com</a><br><a href="http://www.sina.com" target="_blank" rel="external">http://www.sina.com</a><br><a href="http://localhost" target="_blank" rel="external">http://localhost</a></p>
+<p>进到 <code>server.xml</code> 文件中, 找打 Host元素, 那么 同样 的配置 多个 host元素就可以了</p>
+<p>互联网 访问某个资源文件到底是如何访问到的:<br><a href="http://www.sina.com/novel/1.html" target="_blank" rel="external">http://www.sina.com/novel/1.html</a></p>
+<p>Hosts 文件 存在于 C:\Windows\System32\Drivers\etc </p>
+<ol>
+<li><p>进到 hosts文件, 添加 主机名和ip地址的对应的关系,如下</p>
+<blockquote>
+<p>192.168.31.187     www.wenjian.com</p>
+<ol>
+<li>进到server.xml 文件中添加  host元素, 并且 指向对应的文件夹.</li>
+</ol>
+</blockquote>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">  <span class="tag">&lt;<span class="name">Host</span> <span class="attr">name</span>=<span class="string">"www.wenjian.com"</span>  <span class="attr">appBase</span>=<span class="string">"E:\wenjian"</span></span></div><div class="line">      <span class="attr">unpackWARs</span>=<span class="string">"true"</span> <span class="attr">autoDeploy</span>=<span class="string">"true"</span>&gt;</div><div class="line"></div><div class="line">  <span class="comment">&lt;!-- SingleSignOn valve, share authentication between web applications</span></div><div class="line">       Documentation at: /docs/config/valve.html --&gt;</div><div class="line">  <span class="comment">&lt;!--</span></div><div class="line">  &lt;Valve className="org.apache.catalina.authenticator.SingleSignOn" /&gt;</div><div class="line">  --&gt;</div><div class="line"></div><div class="line">  <span class="comment">&lt;!-- Access log processes all example.</span></div><div class="line">       Documentation at: /docs/config/valve.html</div><div class="line">       <span class="doctag">Note:</span> The pattern used is equivalent to using pattern="common" --&gt;</div><div class="line">  <span class="tag">&lt;<span class="name">Valve</span> <span class="attr">className</span>=<span class="string">"org.apache.catalina.valves.AccessLogValve"</span> <span class="attr">directory</span>=<span class="string">"logs"</span></span></div><div class="line">         <span class="attr">prefix</span>=<span class="string">"localhost_access_log"</span> <span class="attr">suffix</span>=<span class="string">".txt"</span></div><div class="line">         <span class="attr">pattern</span>=<span class="string">"%h %l %u %t &amp;quot;%r&amp;quot; %s %b"</span> /&gt;</div><div class="line">	   </div><div class="line">	   <span class="tag">&lt;<span class="name">Context</span> <span class="attr">path</span>=<span class="string">"/news"</span> <span class="attr">docBase</span>=<span class="string">"E:\wenjian\news\1.html"</span>/&gt;</span></div><div class="line"></div><div class="line"><span class="tag">&lt;/<span class="name">Host</span>&gt;</span></div></pre></td></tr></table></figure>
+</li>
+</ol>
+<ol>
+<li>重启服务器即可<br>注意点:</li>
+<li>Hosts 如何不让更改怎么办.</li>
+<li>路径不要写错.  </li>
+</ol>
+<p>问题:<br>如何搭建一个自己的网站？　<br>１． 上万维网联盟，去拍个域名　　　<br>２． 将自己的电脑作为服务器．　运行个ｔｏｍｃａｔ服务器，将端口改为80．配置一个你拍下来的 域名对应的主机名</p>
+<blockquote>
+<p>花生壳.google提供了免费的域名</p>
+</blockquote>
+<h3 id="配置默认的主机名"><a href="#配置默认的主机名" class="headerlink" title="配置默认的主机名"></a>配置默认的主机名</h3><p>当直接通过ip地址去访问的时候, 并没有指定 具体要访问哪个 主机名</p>
+<p><a href="http://192.168.1.100/news/1.html" target="_blank" rel="external">http://192.168.1.100/news/1.html</a><br>sina主机名 1.html </p>
+<p>没有 告诉 具体要访问服务器中的哪个主机, 所以这个时候就 会去访问 默认的主机.<br>是可以通过配置来实现的 </p>
+<p>我们可以通过<a href="http://92.168.1.100(自己的ip地址)来访问tomacat主页，说明localhost被设置为默认的主机" target="_blank" rel="external">http://92.168.1.100(自己的ip地址)来访问tomacat主页，说明localhost被设置为默认的主机</a>.</p>
+<h3 id="给自己配置一个默认的主机名-并且配置默认的web应用-并且默认的web应用下配置默认的欢迎页面"><a href="#给自己配置一个默认的主机名-并且配置默认的web应用-并且默认的web应用下配置默认的欢迎页面" class="headerlink" title="给自己配置一个默认的主机名,并且配置默认的web应用,并且默认的web应用下配置默认的欢迎页面"></a>给自己配置一个默认的主机名,并且配置默认的web应用,并且默认的web应用下配置默认的欢迎页面</h3><ol>
+<li><p>将 defaultHost配置 为 www.sina.com</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;Engine name=&quot;Catalina&quot; defaultHost=&quot;www.sina.com&quot;&gt;</div></pre></td></tr></table></figure>
+</li>
+<li><p>修改Hosts文件<br>192.168.31.187     www.wenjian.com</p>
+</li>
+<li>将新浪下的 news配置成默认的web应用.<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;Context path=&quot;/&quot; docBase=&quot;E:\sina\news&quot;/&gt;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>写个 / 代表默认访问news</p>
+<ol>
+<li>将　news应用下的1.html页面,在 news应用下 建 一个WEB-INF文件下, 然后建一个 web.xml文件<br>然后将1.html设置为欢迎页,如上</li>
+</ol>
 
           
         
@@ -600,6 +666,15 @@
 
           
 
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
           
 
         </nav>
